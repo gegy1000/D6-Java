@@ -1,8 +1,6 @@
-import net.gegy1000.communicator.Communicator;
-import net.gegy1000.communicator.Constants;
+package net.gegy1000.communicator;
+
 import net.gegy1000.communicator.exception.SchoolException;
-import net.gegy1000.communicator.impl.Feed;
-import net.gegy1000.communicator.impl.FeedEntry;
 import net.gegy1000.communicator.storage.JSONDataStorage;
 
 import java.io.File;
@@ -30,7 +28,7 @@ public class LoginExample {
                             System.out.println(entry.getUrl());
                         }
                         if (entry.hasTime()) {
-                            System.out.println("Created at " + Constants.FEED_DATE_FORMAT.format(new Date(entry.getTime())));
+                            System.out.println("Created at " + D6Constants.FEED_DATE_FORMAT.format(new Date(entry.getTime())));
                         }
                         System.out.println();
                     }

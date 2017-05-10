@@ -8,8 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.gegy1000.communicator.exception.InvalidRequestException;
 import net.gegy1000.communicator.exception.SchoolException;
-import net.gegy1000.communicator.impl.Feed;
-import net.gegy1000.communicator.impl.FeedEntry;
+import net.gegy1000.communicator.impl.FeedEntryImpl;
 import net.gegy1000.communicator.model.FeedListModel;
 import net.gegy1000.communicator.model.SettingsModel;
 import net.gegy1000.communicator.model.UserDetails;
@@ -52,8 +51,8 @@ public class RequestHandler {
         try {
             JsonObject parameters = new JsonObject();
             parameters.addProperty("serial", -1);
-            parameters.addProperty("token", Constants.SETTINGS_TOKEN);
-            parameters.addProperty("appId", Constants.APP_ID);
+            parameters.addProperty("token", D6Constants.SETTINGS_TOKEN);
+            parameters.addProperty("appId", D6Constants.APP_ID);
             RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(parameters).getBytes());
             Request request = new Request.Builder()
                     .url(SETTINGS_URL)
@@ -70,7 +69,7 @@ public class RequestHandler {
 
     public FeedListModel downloadFeedList(SettingsModel settings) throws SchoolException {
         try {
-            String url = settings.getUrls().getClients() + "?appId=" + Constants.APP_ID + "&subType=0";
+            String url = settings.getUrls().getClients() + "?appId=" + D6Constants.APP_ID + "&subType=0";
             Request request = new Request.Builder()
                     .url(url)
                     .get()
@@ -94,9 +93,9 @@ public class RequestHandler {
                 parameters.addProperty("userName", this.communicator.getUsername());
                 parameters.addProperty("userEmailAddress", this.communicator.getEmail());
                 parameters.addProperty("device", "ios");
-                parameters.addProperty("appId", Constants.APP_ID);
+                parameters.addProperty("appId", D6Constants.APP_ID);
                 parameters.addProperty("deviceToken", 0);
-                parameters.addProperty("lang", Constants.LANGUAGE);
+                parameters.addProperty("lang", D6Constants.LANGUAGE);
                 JsonArray channels = new JsonArray();
                 parameters.add("channels", channels);
                 JsonArray grades = new JsonArray();
@@ -138,7 +137,7 @@ public class RequestHandler {
                 parameters.addProperty("feedToken", feed.getToken());
                 parameters.addProperty("serial", this.communicator.getSettings().getSerial());
                 parameters.addProperty("deviceToken", "");
-                parameters.addProperty("lang", Constants.LANGUAGE);
+                parameters.addProperty("lang", D6Constants.LANGUAGE);
                 JsonArray channels = new JsonArray();
                 parameters.add("channels", channels);
                 JsonArray grades = new JsonArray();
@@ -150,9 +149,9 @@ public class RequestHandler {
                     }
                 }
                 parameters.add("subscribed_clients", feeds);
-                parameters.addProperty("lang", Constants.LANGUAGE);
+                parameters.addProperty("lang", D6Constants.LANGUAGE);
                 parameters.addProperty("device", "ios");
-                parameters.addProperty("appId", Constants.APP_ID);
+                parameters.addProperty("appId", D6Constants.APP_ID);
                 RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(parameters).getBytes());
                 Request request = new Request.Builder()
                         .url(this.communicator.getSettings().getUrls().getContent())
@@ -178,7 +177,7 @@ public class RequestHandler {
                                 long time = -1;
                                 if (values.has("date")) {
                                     try {
-                                        time = Constants.FEED_DATE_FORMAT.parse(values.get("date").getAsString()).getTime();
+                                        time = D6Constants.FEED_DATE_FORMAT.parse(values.get("date").getAsString()).getTime();
                                     } catch (ParseException e) {
                                         throw new SchoolException("Received invalid date format", e);
                                     }
@@ -191,8 +190,8 @@ public class RequestHandler {
                                 String details = null;
                                 if (values.has("lang")) {
                                     JsonObject lang = values.getAsJsonObject("lang");
-                                    if (lang.has(Constants.LANGUAGE)) {
-                                        JsonObject localized = lang.get(Constants.LANGUAGE).getAsJsonObject();
+                                    if (lang.has(D6Constants.LANGUAGE)) {
+                                        JsonObject localized = lang.get(D6Constants.LANGUAGE).getAsJsonObject();
                                         if (localized.has("title")) {
                                             title = localized.get("title").getAsString();
                                         }
@@ -214,7 +213,7 @@ public class RequestHandler {
                                         }
                                     }
                                 }
-                                FeedEntry entry = new FeedEntry(serial, identifier, category, time, title, details, url, type, transaction);
+                                FeedEntryImpl entry = new FeedEntryImpl(serial, identifier, category, time, title, details, url, type, transaction);
                                 entries.add(entry);
                             }
                         }
@@ -228,6 +227,6 @@ public class RequestHandler {
     }
 
     public String getUserAgent() {
-        return Constants.APP_NAME + "/" + Constants.APP_VERSION + " (" + this.communicator.getDevice().toString() + ")";
+        return D6Constants.APP_NAME + "/" + D6Constants.APP_VERSION + " (" + this.communicator.getDevice().toString() + ")";
     }
 }

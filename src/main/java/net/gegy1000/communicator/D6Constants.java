@@ -3,7 +3,7 @@ package net.gegy1000.communicator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class Constants {
+public class D6Constants {
     public static final String APP_NAME = "School";
     public static final String APP_VERSION = "16.12.1";
 

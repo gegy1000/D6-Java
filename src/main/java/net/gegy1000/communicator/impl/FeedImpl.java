@@ -1,6 +1,8 @@
 package net.gegy1000.communicator.impl;
 
 import net.gegy1000.communicator.Communicator;
+import net.gegy1000.communicator.Feed;
+import net.gegy1000.communicator.FeedEntry;
 import net.gegy1000.communicator.exception.SchoolException;
 import net.gegy1000.communicator.model.FeedModel;
 import net.gegy1000.communicator.model.local.ActiveFeedsModel;
@@ -10,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public class Feed {
+public class FeedImpl implements Feed {
     private Communicator communicator;
 
     private String name;
@@ -28,7 +30,7 @@ public class Feed {
     private String uuid;
     private long userId;
 
-    public Feed(Communicator communicator, FeedModel entry) throws SchoolException {
+    public FeedImpl(Communicator communicator, FeedModel entry) throws SchoolException {
         this.communicator = communicator;
         this.name = entry.getName();
         this.token = entry.getToken();
@@ -45,6 +47,7 @@ public class Feed {
         }
     }
 
+    @Override
     public void setActive(boolean active) throws SchoolException {
         if (this.active != active) {
             ActiveFeedsModel activeFeeds = this.communicator.getActiveFeeds();
@@ -63,6 +66,7 @@ public class Feed {
         }
     }
 
+    @Override
     public void setUserId(long userId) throws SchoolException {
         ActiveFeedsModel activeFeeds = this.communicator.getActiveFeeds();
         ActiveFeedsModel.ActiveFeed feed = activeFeeds.get(this.id);
@@ -75,46 +79,57 @@ public class Feed {
         this.userId = userId;
     }
 
+    @Override
     public List<FeedEntry> requestContent() throws SchoolException {
         return this.communicator.getRequestHandler().requestFeedContent(this);
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public String getToken() {
         return this.token;
     }
 
+    @Override
     public String getUuid() {
         return this.uuid;
     }
 
+    @Override
     public long getId() {
         return this.id;
     }
 
+    @Override
     public long getUserId() {
         return this.userId;
     }
 
+    @Override
     public boolean isPrivate() {
         return this.isPrivate;
     }
 
+    @Override
     public String getLogo() {
         return this.logo;
     }
 
+    @Override
     public String getCountry() {
         return this.country;
     }
 
+    @Override
     public String getProvince() {
         return this.province;
     }
 
+    @Override
     public boolean isActive() {
         return this.active;
     }
@@ -126,6 +141,6 @@ public class Feed {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof Feed && ((Feed) object).id == this.id;
+        return object instanceof FeedImpl && ((FeedImpl) object).id == this.id;
     }
 }

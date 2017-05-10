@@ -2,7 +2,7 @@ package net.gegy1000.communicator;
 
 import net.gegy1000.communicator.device.DeviceInfo;
 import net.gegy1000.communicator.exception.SchoolException;
-import net.gegy1000.communicator.impl.Feed;
+import net.gegy1000.communicator.impl.FeedImpl;
 import net.gegy1000.communicator.model.FeedListModel;
 import net.gegy1000.communicator.model.FeedModel;
 import net.gegy1000.communicator.model.SettingsModel;
@@ -15,6 +15,9 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Class to handle all interaction with the d6 school communicator
+ */
 public class Communicator {
     private DataStorage dataStorage;
     private DeviceInfo device = DeviceInfo.random(new Random());
@@ -67,12 +70,18 @@ public class Communicator {
         return this.settingsModel;
     }
 
+    /**
+     * Gets all feeds registered to d6
+     *
+     * @return a set of all registered feeds
+     * @throws SchoolException if an exception occurred when requesting feeds
+     */
     public Set<Feed> getFeeds() throws SchoolException {
         if (this.feeds == null) {
             this.feeds = new HashSet<>();
             FeedListModel feedListModel = this.requestHandler.downloadFeedList(this.settingsModel);
             for (FeedModel feedModel : feedListModel.getFeeds()) {
-                this.feeds.add(new Feed(this, feedModel));
+                this.feeds.add(new FeedImpl(this, feedModel));
             }
         }
         return this.feeds;
@@ -156,16 +165,28 @@ public class Communicator {
         return this.email;
     }
 
+    /**
+     * Sends the given feeds updated local settings to d6
+     *
+     * @param feed the feed to update
+     * @throws SchoolException if an exception occurs while sending feed update
+     */
     public void updateFeed(Feed feed) throws SchoolException {
         this.requestHandler.updateUserFeed(feed, null);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
+    /**
+     * @return the {@link RequestHandler} for this {@link Communicator}
+     */
     public RequestHandler getRequestHandler() {
         return this.requestHandler;
+    }
+
+    /**
+     * @return a new {@link Communicator} builder
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
@@ -175,19 +196,37 @@ public class Communicator {
         private Builder() {
         }
 
+        /**
+         * Sets the {@link DataStorage} for this {@link Builder}
+         *
+         * @param dataStorage the storage to be used for the built {@link Communicator}
+         * @return this builder
+         */
         public Builder withStorage(DataStorage dataStorage) {
             this.dataStorage = dataStorage;
             return this;
         }
 
+        /**
+         * Sets the {@link DeviceInfo} for this {@link Builder}
+         * If not set, a random device will be used
+         *
+         * @param device the device to be used for the built {@link Communicator}
+         * @return this builder
+         */
         public Builder withDevice(DeviceInfo device) {
             this.device = device;
             return this;
         }
 
+        /**
+         * Builds this builder into a {@link Communicator}
+         *
+         * @return the built {@link Communicator}
+         */
         public Communicator build() {
             if (this.dataStorage == null) {
-                throw new IllegalArgumentException("Could not build Communicator! dataStorage was not set!");
+                throw new IllegalArgumentException("Could not build Communicator, dataStorage was not set!");
             }
             return new Communicator(this.dataStorage, this.device);
         }

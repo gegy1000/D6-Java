@@ -36,6 +36,12 @@ public class DeviceInfo {
         this.osVersion = osVersion;
     }
 
+    /**
+     * Generates a random {@link DeviceInfo} object
+     *
+     * @param random random number generator
+     * @return random device info
+     */
     public static DeviceInfo random(Random random) {
         String[] device = DEVICES[random.nextInt(DEVICES.length)];
         return new DeviceInfo(device[0], device[1], device[2]);

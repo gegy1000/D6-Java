@@ -97,8 +97,10 @@ public class RequestHandler {
                 parameters.addProperty("deviceToken", 0);
                 parameters.addProperty("lang", D6Constants.LANGUAGE);
                 JsonArray channels = new JsonArray();
+                channels.add(0);
                 parameters.add("channels", channels);
                 JsonArray grades = new JsonArray();
+                grades.add(0);
                 parameters.add("grades", grades);
                 if (userDetails != null) {
                     parameters.add("details", GSON.toJsonTree(userDetails));
